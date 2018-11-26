@@ -10,7 +10,7 @@ ARMDSP_NFSROOT=/arm
 # for compiling arm kernel module ================================
 
 #KERNELDIR = /opt/ti/linux-03.20.00.11/
-KERNELDIR = /opt/hawkboard/linux-omapl1/
+KERNELDIR = $(KERNEL_SRC)
 PWD := $(shell pwd)
 ARCH=arm
 CROSS_COMPILE=arm-none-linux-gnueabi-
