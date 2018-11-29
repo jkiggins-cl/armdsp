@@ -179,9 +179,12 @@ armdsp_ioctl (struct inode *inode, struct file *filp,
 	void __user *argp = (void __user *)arg;
 	uint32_t __iomem *iop;
 
+    printk("%s:%i:\n", __func__, __LINE__);
+
 	switch(cmd) {
 	case ARMDSP_IOCSTOP:
-		if (minor != 0) {
+		printk("%s:%i: Minor: %i\n", __func__, __LINE__, minor);
+        if (minor != 0) {
 			err = -ENOTTY;
 			break;
 		}
@@ -324,8 +327,10 @@ armdsp_init (void)
 	unsigned int minor;
 	struct armdsp *dp;
 	int ret = 0;
+	void* davinci_intc_base;
 
-	armdsp_reset ();
+    armdsp_reset ();
+    davinci_intc_base = ioremap(davinci_soc_info.intc_base, SZ_4K);
 
 	for (minor = 0; minor < ARMDSP_NDEV; minor++) {
 		dp = &armdsp[minor];
@@ -334,7 +339,7 @@ armdsp_init (void)
 		dp->chipint_mask = 1 << minor;
 
 		armdsp_writephys (dp->chipint_mask, SYSCFG0_ADDR + CHIPSIG_CLR);
-		writel (dp->irq, davinci_soc_info.intc_base + SICR);
+		writel (dp->irq, davinci_intc_base + SICR);
 	}
 
 	armdsp_comm = ioremap (ARMDSP_COMM_PHYS, ARMDSP_COMM_SIZE);
